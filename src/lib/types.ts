@@ -2,12 +2,13 @@
 // Asset Management Types
 export interface Asset {
   id: string;
-  name: string;
-  model: string;
-  manufacturer: string;
   serialNumber: string;
+  nameplate: string;
+  stationName: string;
+  lineName: string;
+  robotNumber: string;
+  robotMake: string;
   location: string;
-  category: string;
   status: 'operational' | 'maintenance' | 'repair' | 'retired';
   installDate: string;
   lastMaintenance: string;
@@ -20,6 +21,7 @@ export interface AssetSparePart {
   id: string;
   partId: string;
   partName: string;
+  partType: 'cap-tip' | 'tip-base' | 'shank' | 'adapter';
   quantity: number;
   lastReplaced?: string;
   notes?: string;
@@ -30,8 +32,9 @@ export interface SparePart {
   id: string;
   name: string;
   partNumber: string;
+  partType: 'cap-tip' | 'tip-base' | 'shank' | 'adapter';
   description: string;
-  category: string;
+  compatibleRobots: string[];
   manufacturer: string;
   supplier: string;
   unitPrice: number;
@@ -53,6 +56,7 @@ export interface Reorder {
   partId: string;
   partName: string;
   partNumber: string;
+  partType: 'cap-tip' | 'tip-base' | 'shank' | 'adapter';
   supplier: string;
   quantity: number;
   unitPrice: number;

@@ -9,6 +9,7 @@ interface StatCardProps {
   description?: string;
   change?: number;
   className?: string;
+  type?: 'default' | 'warning' | 'success' | 'danger';
 }
 
 export function StatCard({
@@ -18,12 +19,29 @@ export function StatCard({
   description,
   change,
   className,
+  type = 'default',
 }: StatCardProps) {
   return (
-    <Card className={cn("overflow-hidden transition-all duration-200 hover:shadow-md", className)}>
+    <Card className={cn(
+      "overflow-hidden transition-all duration-200 hover:shadow-md",
+      {
+        "border-l-4 border-l-amber-500": type === 'warning',
+        "border-l-4 border-l-green-500": type === 'success',
+        "border-l-4 border-l-red-500": type === 'danger',
+      },
+      className
+    )}>
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        {icon && <div className="w-4 h-4 text-muted-foreground">{icon}</div>}
+        {icon && <div className={cn(
+          "w-4 h-4", 
+          {
+            "text-amber-500": type === 'warning',
+            "text-green-500": type === 'success',
+            "text-red-500": type === 'danger',
+            "text-muted-foreground": type === 'default',
+          }
+        )}>{icon}</div>}
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
