@@ -118,7 +118,7 @@ const Dashboard = () => {
               <ul className="mt-2 space-y-1">
                 {assetsNeedingMaintenance.slice(0, 3).map(asset => (
                   <li key={asset.id} className="flex items-center justify-between">
-                    <span>{asset.name}</span>
+                    <span>{asset.serialNumber}</span>
                     <span className={cn(
                       "text-xs font-medium px-2 py-1 rounded-full",
                       asset.status === 'repair' 

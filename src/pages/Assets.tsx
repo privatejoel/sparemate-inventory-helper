@@ -19,33 +19,33 @@ const Assets = () => {
 
   // Filter assets based on search term
   const filteredAssets = mockAssets.filter((asset) => 
-    asset.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     asset.serialNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    asset.nameplate.toLowerCase().includes(searchTerm.toLowerCase()) ||
     asset.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Table columns definition
   const columns: ColumnDef<Asset>[] = [
     {
-      accessorKey: 'name',
+      accessorKey: 'serialNumber',
       header: ({ column }) => (
         <div
           className="flex items-center cursor-pointer"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Name
+          Serial Number
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </div>
       ),
-      cell: ({ row }) => <div className="font-medium">{row.getValue('name')}</div>,
+      cell: ({ row }) => <div className="font-medium">{row.getValue('serialNumber')}</div>,
     },
     {
-      accessorKey: 'model',
-      header: 'Model',
+      accessorKey: 'nameplate',
+      header: 'Nameplate',
     },
     {
-      accessorKey: 'manufacturer',
-      header: 'Manufacturer',
+      accessorKey: 'robotMake',
+      header: 'Robot Make',
     },
     {
       accessorKey: 'location',
@@ -153,19 +153,19 @@ const Assets = () => {
               <Card key={asset.id} className="overflow-hidden transition-all duration-200 hover:shadow-md">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{asset.name}</CardTitle>
+                    <CardTitle className="text-lg">{asset.serialNumber}</CardTitle>
                     {renderStatusBadge(asset.status)}
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     <div className="grid grid-cols-2 gap-2">
-                      <div className="text-sm text-muted-foreground">Model</div>
-                      <div className="text-sm font-medium text-right">{asset.model}</div>
+                      <div className="text-sm text-muted-foreground">Nameplate</div>
+                      <div className="text-sm font-medium text-right">{asset.nameplate}</div>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
-                      <div className="text-sm text-muted-foreground">Serial Number</div>
-                      <div className="text-sm font-medium text-right">{asset.serialNumber}</div>
+                      <div className="text-sm text-muted-foreground">Robot Number</div>
+                      <div className="text-sm font-medium text-right">{asset.robotNumber}</div>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="text-sm text-muted-foreground">Location</div>
