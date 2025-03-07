@@ -25,6 +25,7 @@ import { cn } from '@/lib/utils';
 
 const SparePartsPage: React.FC = () => {
   const navigate = useNavigate();
+  
   const columns = [
     {
       accessorKey: "name",

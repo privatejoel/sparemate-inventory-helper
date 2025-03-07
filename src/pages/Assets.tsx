@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
@@ -12,10 +11,12 @@ import { mockAssets } from '@/lib/mock-data';
 import { ColumnDef } from '@tanstack/react-table';
 import { Wrench, Plus, Search, FileText, ArrowUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
 
 const Assets = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [viewType, setViewType] = useState<'table' | 'cards'>('table');
+  const navigate = useNavigate();
 
   // Filter assets based on search term
   const filteredAssets = mockAssets.filter((asset) => 
@@ -118,7 +119,7 @@ const Assets = () => {
             Manage and monitor your equipment
           </p>
         </div>
-        <Button>
+        <Button onClick={() => navigate('/assets/new')}>
           <Plus className="mr-2 h-4 w-4" />
           Add Asset
         </Button>
