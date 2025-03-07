@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Assets from "./pages/Assets";
+import NewAsset from "./pages/NewAsset";
 import SpareParts from "./pages/SpareParts";
 import Reorders from "./pages/Reorders";
 import Reports from "./pages/Reports";
@@ -24,6 +26,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/assets" element={<Assets />} />
+          <Route path="/assets/new" element={<NewAsset />} />
           <Route path="/spare-parts" element={<SpareParts />} />
           <Route path="/spare-parts/new" element={<NewSparePart />} />
           <Route path="/reorders" element={<Reorders />} />
