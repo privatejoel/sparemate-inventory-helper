@@ -1,16 +1,18 @@
-
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/layout/AppLayout';
 import { mockSpareParts } from '@/lib/mock-data';
 import { DataTable } from '@/components/ui/data-table';
 import { SparePart } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { 
   ArrowUpDown,
   AlertTriangle,
   CheckCircle,
   ShoppingCart,
-  Clock
+  Clock,
+  Plus
 } from 'lucide-react';
 import { 
   Card, 
@@ -22,6 +24,7 @@ import {
 import { cn } from '@/lib/utils';
 
 const SparePartsPage: React.FC = () => {
+  const navigate = useNavigate();
   const columns = [
     {
       accessorKey: "name",
@@ -112,6 +115,10 @@ const SparePartsPage: React.FC = () => {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold tracking-tight">Spare Parts Inventory</h1>
+          <Button onClick={() => navigate('/spare-parts/new')}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Spare Part
+          </Button>
         </div>
         
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">

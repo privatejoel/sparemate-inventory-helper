@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,6 +11,7 @@ import Reorders from "./pages/Reorders";
 import Reports from "./pages/Reports";
 import NewReorder from "./pages/NewReorder";
 import Settings from "./pages/Settings";
+import NewSparePart from "./pages/NewSparePart";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +25,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/assets" element={<Assets />} />
           <Route path="/spare-parts" element={<SpareParts />} />
+          <Route path="/spare-parts/new" element={<NewSparePart />} />
           <Route path="/reorders" element={<Reorders />} />
           <Route path="/reorders/new" element={<NewReorder />} />
           <Route path="/reports" element={<Reports />} />
