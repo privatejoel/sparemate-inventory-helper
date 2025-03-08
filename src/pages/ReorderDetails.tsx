@@ -1,20 +1,23 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
 import { ArrowLeft, ShoppingCart, Package, Truck, Calendar, FileText, CheckCircle, AlertCircle, XCircle, Edit, ClipboardList } from 'lucide-react';
 import { mockReorders } from '@/lib/mock-data';
 import { cn } from '@/lib/utils';
+import { Reorder } from '@/lib/types';
 
 const ReorderDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   
-  const reorder = mockReorders.find(r => r.id === id);
+  const [reorder, setReorder] = useState<Reorder | undefined>(
+    mockReorders.find(r => r.id === id)
+  );
   
   if (!reorder) {
     return (
@@ -40,6 +43,40 @@ const ReorderDetailsPage = () => {
       </AppLayout>
     );
   }
+
+  const handleApprove = () => {
+    const updatedReorder = {
+      ...reorder,
+      status: 'approved' as const,
+      dateApproved: new Date().toISOString().split('T')[0],
+    };
+
+    setReorder(updatedReorder);
+    toast.success(`Reorder #${reorder.id.replace('ro-', '')} has been approved.`);
+  };
+
+  const handleReject = () => {
+    const updatedReorder = {
+      ...reorder,
+      status: 'cancelled' as const,
+    };
+
+    setReorder(updatedReorder);
+    toast.error(`Reorder #${reorder.id.replace('ro-', '')} has been rejected.`);
+  };
+
+  const handlePlaceOrder = () => {
+    const updatedReorder = {
+      ...reorder,
+      status: 'ordered' as const,
+      dateOrdered: new Date().toISOString().split('T')[0],
+      expectedDelivery: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      purchaseOrderNumber: `PO-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
+    };
+
+    setReorder(updatedReorder);
+    toast.success(`Order #${reorder.id.replace('ro-', '')} has been placed.`);
+  };
   
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -75,18 +112,26 @@ const ReorderDetailsPage = () => {
           <div className="flex gap-2">
             {reorder.status === 'pending' && (
               <>
-                <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50">
+                <Button 
+                  variant="outline" 
+                  className="text-red-600 border-red-200 hover:bg-red-50"
+                  onClick={handleReject}
+                >
                   <XCircle className="mr-2 h-4 w-4" />
                   Reject
                 </Button>
-                <Button variant="outline" className="text-green-600 border-green-200 hover:bg-green-50">
+                <Button 
+                  variant="outline" 
+                  className="text-green-600 border-green-200 hover:bg-green-50"
+                  onClick={handleApprove}
+                >
                   <CheckCircle className="mr-2 h-4 w-4" />
                   Approve
                 </Button>
               </>
             )}
             {reorder.status === 'approved' && (
-              <Button>
+              <Button onClick={handlePlaceOrder}>
                 <ShoppingCart className="mr-2 h-4 w-4" />
                 Place Order
               </Button>

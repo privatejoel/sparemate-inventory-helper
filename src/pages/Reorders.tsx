@@ -5,6 +5,7 @@ import { mockReorders } from '@/lib/mock-data';
 import { DataTable } from '@/components/ui/data-table';
 import { Reorder } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
 import { 
   ArrowUpDown,
   ShoppingCart,
@@ -26,6 +27,36 @@ import { Button } from '@/components/ui/button';
 
 const ReordersPage: React.FC = () => {
   const navigate = useNavigate();
+  const [reorders, setReorders] = React.useState<Reorder[]>(mockReorders);
+
+  const handleApprove = (reorder: Reorder) => {
+    const updatedReorder = {
+      ...reorder,
+      status: 'approved' as const,
+      dateApproved: new Date().toISOString().split('T')[0],
+    };
+
+    const updatedReorders = reorders.map((r) => 
+      r.id === reorder.id ? updatedReorder : r
+    );
+
+    setReorders(updatedReorders);
+    toast.success(`Reorder #${reorder.id.replace('ro-', '')} has been approved.`);
+  };
+
+  const handleReject = (reorder: Reorder) => {
+    const updatedReorder = {
+      ...reorder,
+      status: 'cancelled' as const,
+    };
+
+    const updatedReorders = reorders.map((r) => 
+      r.id === reorder.id ? updatedReorder : r
+    );
+
+    setReorders(updatedReorders);
+    toast.error(`Reorder #${reorder.id.replace('ro-', '')} has been rejected.`);
+  };
 
   const columns = [
     {
@@ -115,11 +146,19 @@ const ReordersPage: React.FC = () => {
         
         return reorder.status === 'pending' ? (
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="cursor-pointer border-green-500 text-green-600 hover:bg-green-50">
+            <Badge 
+              variant="outline" 
+              className="cursor-pointer border-green-500 text-green-600 hover:bg-green-50"
+              onClick={() => handleApprove(reorder)}
+            >
               <CheckCircle className="mr-1 h-3 w-3" />
               Approve
             </Badge>
-            <Badge variant="outline" className="cursor-pointer border-red-500 text-red-600 hover:bg-red-50">
+            <Badge 
+              variant="outline" 
+              className="cursor-pointer border-red-500 text-red-600 hover:bg-red-50"
+              onClick={() => handleReject(reorder)}
+            >
               <XCircle className="mr-1 h-3 w-3" />
               Reject
             </Badge>
@@ -147,7 +186,7 @@ const ReordersPage: React.FC = () => {
               <ShoppingCart className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{mockReorders.length}</div>
+              <div className="text-2xl font-bold">{reorders.length}</div>
               <p className="text-xs text-muted-foreground">
                 All time
               </p>
@@ -161,7 +200,7 @@ const ReordersPage: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {mockReorders.filter(reorder => reorder.status === 'pending').length}
+                {reorders.filter(reorder => reorder.status === 'pending').length}
               </div>
               <p className="text-xs text-muted-foreground">
                 Needs approval
@@ -176,7 +215,7 @@ const ReordersPage: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {mockReorders.filter(reorder => reorder.status === 'ordered').length}
+                {reorders.filter(reorder => reorder.status === 'ordered').length}
               </div>
               <p className="text-xs text-muted-foreground">
                 In transit
@@ -191,7 +230,7 @@ const ReordersPage: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {mockReorders.filter(reorder => reorder.status === 'delivered').length}
+                {reorders.filter(reorder => reorder.status === 'delivered').length}
               </div>
               <p className="text-xs text-muted-foreground">
                 Completed
@@ -210,7 +249,7 @@ const ReordersPage: React.FC = () => {
           <CardContent>
             <DataTable 
               columns={columns} 
-              data={mockReorders} 
+              data={reorders} 
               searchColumn="partName"
               searchPlaceholder="Search reorders..."
             />
