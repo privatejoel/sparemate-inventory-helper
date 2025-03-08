@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { ArrowLeft, ShoppingCart, Package, Truck, Calendar, FileText, CheckCircle, AlertCircle, XCircle, Edit, ClipboardList } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Package, Truck, Calendar, FileText, CheckCircle, AlertCircle, XCircle, LifeBuoy, ClipboardList } from 'lucide-react';
 import { mockReorders } from '@/lib/mock-data';
 import { cn } from '@/lib/utils';
 import { Reorder } from '@/lib/types';
@@ -77,7 +77,11 @@ const ReorderDetailsPage = () => {
     setReorder(updatedReorder);
     toast.success(`Order #${reorder.id.replace('ro-', '')} has been placed.`);
   };
-  
+
+  const handleRequestSupport = () => {
+    toast.success(`Support request submitted for order #${reorder?.id.replace('ro-', '')}`);
+  };
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'pending': return <AlertCircle className="h-5 w-5 text-amber-500" />;
@@ -88,7 +92,7 @@ const ReorderDetailsPage = () => {
       default: return <FileText className="h-5 w-5" />;
     }
   };
-  
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return "bg-amber-100 text-amber-800 border-amber-200";
@@ -137,9 +141,13 @@ const ReorderDetailsPage = () => {
               </Button>
             )}
             {reorder.status !== 'cancelled' && reorder.status !== 'delivered' && (
-              <Button variant="outline">
-                <Edit className="mr-2 h-4 w-4" />
-                Edit
+              <Button 
+                variant="outline"
+                className="text-purple-600 border-purple-200 hover:bg-purple-50"
+                onClick={handleRequestSupport}
+              >
+                <LifeBuoy className="mr-2 h-4 w-4" />
+                Request Support
               </Button>
             )}
           </div>
