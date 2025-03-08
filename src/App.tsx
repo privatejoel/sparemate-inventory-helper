@@ -10,6 +10,7 @@ import Assets from "./pages/Assets";
 import NewAsset from "./pages/NewAsset";
 import SpareParts from "./pages/SpareParts";
 import Reorders from "./pages/Reorders";
+import ReorderDetails from "./pages/ReorderDetails";
 import Reports from "./pages/Reports";
 import NewReorder from "./pages/NewReorder";
 import Settings from "./pages/Settings";
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/spare-parts/new" element={<NewSparePart />} />
           <Route path="/reorders" element={<Reorders />} />
           <Route path="/reorders/new" element={<NewReorder />} />
+          <Route path="/reorders/:id" element={<ReorderDetails />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

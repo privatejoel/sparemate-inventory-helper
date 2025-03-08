@@ -16,7 +16,7 @@ import {
   BarChart3,
   ChevronRight
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { mockAssets, mockSpareParts, mockReorders, mockDashboardStats } from '@/lib/mock-data';
 import { cn } from '@/lib/utils';
 
@@ -34,6 +34,8 @@ const assetsNeedingMaintenance = mockAssets.filter(asset =>
 );
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  
   return (
     <AppLayout>
       <div className="flex items-center justify-between mb-8">
@@ -48,7 +50,7 @@ const Dashboard = () => {
             <BarChart3 className="mr-2 h-4 w-4" />
             Generate Report
           </Button>
-          <Button>
+          <Button onClick={() => navigate('/spare-parts/new')}>
             <Package className="mr-2 h-4 w-4" />
             Add Spare Part
           </Button>

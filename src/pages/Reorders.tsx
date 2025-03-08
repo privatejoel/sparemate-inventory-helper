@@ -1,5 +1,5 @@
-
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/layout/AppLayout';
 import { mockReorders } from '@/lib/mock-data';
 import { DataTable } from '@/components/ui/data-table';
@@ -25,6 +25,8 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 const ReordersPage: React.FC = () => {
+  const navigate = useNavigate();
+
   const columns = [
     {
       accessorKey: "partName",
@@ -34,7 +36,11 @@ const ReordersPage: React.FC = () => {
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </div>
       ),
-      cell: ({ row }) => <div className="font-medium">{row.getValue("partName")}</div>,
+      cell: ({ row }) => (
+        <div className="font-medium cursor-pointer hover:underline" onClick={() => navigate(`/reorders/${row.original.id}`)}>
+          {row.getValue("partName")}
+        </div>
+      ),
     },
     {
       accessorKey: "partNumber",
@@ -128,7 +134,7 @@ const ReordersPage: React.FC = () => {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold tracking-tight">Spare Parts Reorders</h1>
-          <Button>
+          <Button onClick={() => navigate('/reorders/new')}>
             <ShoppingCart className="mr-2 h-4 w-4" />
             New Reorder
           </Button>
