@@ -10,6 +10,7 @@ import { ArrowLeft, ShoppingCart, Package, Truck, Calendar, FileText, CheckCircl
 import { mockReorders } from '@/lib/mock-data';
 import { cn } from '@/lib/utils';
 import { Reorder } from '@/lib/types';
+import SupportRequestDialog from '@/components/SupportRequestDialog';
 
 const ReorderDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +19,8 @@ const ReorderDetailsPage = () => {
   const [reorder, setReorder] = useState<Reorder | undefined>(
     mockReorders.find(r => r.id === id)
   );
+  
+  const [supportDialogOpen, setSupportDialogOpen] = useState(false);
   
   if (!reorder) {
     return (
@@ -79,7 +82,31 @@ const ReorderDetailsPage = () => {
   };
 
   const handleRequestSupport = () => {
-    toast.success(`Support request submitted for order #${reorder?.id.replace('ro-', '')}`);
+    setSupportDialogOpen(true);
+  };
+  
+  const handleSupportSubmit = (supportType: string, notes: string) => {
+    let message = '';
+    
+    switch (supportType) {
+      case 'cancellation':
+        message = `Cancellation request submitted for order #${reorder?.id.replace('ro-', '')}`;
+        break;
+      case 'modification':
+        message = `Modification request submitted for order #${reorder?.id.replace('ro-', '')}`;
+        break;
+      case 'urgent-delivery':
+        message = `Urgent delivery request submitted for order #${reorder?.id.replace('ro-', '')}`;
+        break;
+      default:
+        message = `Support request submitted for order #${reorder?.id.replace('ro-', '')}`;
+    }
+    
+    if (notes) {
+      message += ` with note: "${notes}"`;
+    }
+    
+    toast.success(message);
   };
 
   const getStatusIcon = (status: string) => {
@@ -152,6 +179,13 @@ const ReorderDetailsPage = () => {
             )}
           </div>
         </div>
+        
+        <SupportRequestDialog 
+          isOpen={supportDialogOpen}
+          setIsOpen={setSupportDialogOpen}
+          orderId={reorder?.id || ''}
+          onSubmit={handleSupportSubmit}
+        />
         
         <div className="flex items-center gap-4">
           <h1 className="text-3xl font-bold tracking-tight">Reorder #{id?.replace('ro-', '')}</h1>
