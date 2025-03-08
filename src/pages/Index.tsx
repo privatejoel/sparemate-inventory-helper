@@ -1,4 +1,3 @@
-
 import React from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import { StatCard } from '@/components/ui/stat-card';
@@ -159,7 +158,11 @@ const Dashboard = () => {
             <CardContent>
               <div className="space-y-4">
                 {mockReorders.slice(0, 4).map(reorder => (
-                  <div key={reorder.id} className="flex items-center gap-4 p-3 border rounded-lg hover:bg-muted/50 transition-colors duration-200">
+                  <div 
+                    key={reorder.id} 
+                    className="flex items-center gap-4 p-3 border rounded-lg hover:bg-muted/50 transition-colors duration-200 cursor-pointer"
+                    onClick={() => navigate(`/reorders/${reorder.id}`)}
+                  >
                     <div className={cn(
                       "w-10 h-10 rounded-full flex items-center justify-center",
                       reorder.status === 'delivered' ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" :
