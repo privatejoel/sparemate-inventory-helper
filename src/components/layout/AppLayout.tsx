@@ -82,7 +82,14 @@ const AppLayout = ({ children }: AppLayoutProps) => {
         )}
       >
         <div className="p-6 border-b border-border flex items-center justify-center">
-          <h1 className="text-2xl font-semibold tracking-tight">SpareMate</h1>
+          <img 
+            src="/lovable-uploads/eaf397f7-ad51-4afe-82b3-2cb2f630c294.png" 
+            alt="Obara India Logo" 
+            className="h-12" 
+          />
+        </div>
+        <div className="mt-2 px-6">
+          <h2 className="text-base font-medium text-center">Spare Parts Management System</h2>
         </div>
         <div className="flex flex-col gap-1 p-3 flex-grow">
           {navItems.map((item) => (
@@ -97,12 +104,12 @@ const AppLayout = ({ children }: AppLayoutProps) => {
         </div>
         <div className="p-4 border-t border-border">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
-              <span className="text-sm font-medium">AD</span>
+            <div className="w-8 h-8 rounded-full bg-[#9b87f5] flex items-center justify-center text-primary-foreground">
+              <span className="text-sm font-medium">OI</span>
             </div>
             <div>
-              <div className="text-sm font-medium">Admin User</div>
-              <div className="text-xs text-muted-foreground">Maintenance</div>
+              <div className="text-sm font-medium">Obara India</div>
+              <div className="text-xs text-muted-foreground">Customer Portal</div>
             </div>
           </div>
         </div>

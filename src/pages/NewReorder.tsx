@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AppLayout from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,11 +11,22 @@ import { useToast } from '@/hooks/use-toast';
 
 const NewReorderPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const [selectedPartId, setSelectedPartId] = useState('');
   const [quantity, setQuantity] = useState<number>(1);
   const [notes, setNotes] = useState('');
   const [urgency, setUrgency] = useState('normal');
+  const [purchaseOrderNumber, setPurchaseOrderNumber] = useState('');
+
+  useEffect(() => {
+    // Get partId from URL if it exists
+    const params = new URLSearchParams(location.search);
+    const partId = params.get('partId');
+    if (partId) {
+      setSelectedPartId(partId);
+    }
+  }, [location]);
 
   const selectedPart = mockSpareParts.find(part => part.id === selectedPartId);
 
@@ -26,6 +37,15 @@ const NewReorderPage = () => {
       toast({
         title: "Error",
         description: "Please select a part to reorder",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!purchaseOrderNumber) {
+      toast({
+        title: "Error",
+        description: "Please enter a Purchase Order Number",
         variant: "destructive"
       });
       return;
@@ -85,13 +105,13 @@ const NewReorderPage = () => {
                     <div>{selectedPart.supplier}</div>
                     
                     <div className="text-sm font-medium">Unit Price:</div>
-                    <div>${selectedPart.unitPrice.toFixed(2)}</div>
+                    <div>₹{selectedPart.unitPrice.toFixed(2)}</div>
                     
                     <div className="text-sm font-medium">Lead Time:</div>
                     <div>{selectedPart.leadTime} days</div>
                     
                     <div className="text-sm font-medium">Total Cost:</div>
-                    <div className="font-bold">${(selectedPart.unitPrice * quantity).toFixed(2)}</div>
+                    <div className="font-bold">₹{(selectedPart.unitPrice * quantity).toFixed(2)}</div>
                   </div>
                 </div>
               )}
@@ -103,6 +123,17 @@ const NewReorderPage = () => {
                   min="1" 
                   value={quantity}
                   onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                  required 
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Purchase Order Number</label>
+                <Input 
+                  type="text" 
+                  placeholder="Enter your PO number"
+                  value={purchaseOrderNumber}
+                  onChange={(e) => setPurchaseOrderNumber(e.target.value)}
                   required 
                 />
               </div>

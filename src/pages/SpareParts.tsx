@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/layout/AppLayout';
@@ -22,9 +23,16 @@ import {
   CardTitle 
 } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 const SparePartsPage: React.FC = () => {
   const navigate = useNavigate();
+  
+  const handleReorder = (sparePart: SparePart) => {
+    // Navigate to the new reorder page with the part ID in search params
+    navigate(`/reorders/new?partId=${sparePart.id}`);
+    toast.info(`Starting reorder process for ${sparePart.name}`);
+  };
   
   const columns = [
     {
@@ -64,7 +72,7 @@ const SparePartsPage: React.FC = () => {
     {
       accessorKey: "unitPrice",
       header: "Unit Price",
-      cell: ({ row }) => <div className="text-right">${row.getValue("unitPrice").toFixed(2)}</div>,
+      cell: ({ row }) => <div className="text-right">₹{row.getValue("unitPrice").toFixed(2)}</div>,
     },
     {
       accessorKey: "status",
@@ -102,10 +110,15 @@ const SparePartsPage: React.FC = () => {
         const needsReorder = sparePart.stockQuantity <= sparePart.reorderPoint;
         
         return needsReorder && sparePart.status !== 'on-order' ? (
-          <Badge variant="outline" className="cursor-pointer border-amber-500 text-amber-600 hover:bg-amber-50">
+          <Button 
+            variant="outline" 
+            size="sm"
+            className="border-amber-500 text-amber-600 hover:bg-amber-50"
+            onClick={() => handleReorder(sparePart)}
+          >
             <ShoppingCart className="mr-1 h-3 w-3" />
             Reorder
-          </Badge>
+          </Button>
         ) : null;
       },
     },

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/layout/AppLayout';
@@ -11,6 +12,7 @@ import { mockReorders } from '@/lib/mock-data';
 import { cn } from '@/lib/utils';
 import { Reorder } from '@/lib/types';
 import SupportRequestDialog from '@/components/SupportRequestDialog';
+import { Input } from '@/components/ui/input';
 
 const ReorderDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -21,6 +23,7 @@ const ReorderDetailsPage = () => {
   );
   
   const [supportDialogOpen, setSupportDialogOpen] = useState(false);
+  const [purchaseOrderNumber, setPurchaseOrderNumber] = useState(reorder?.purchaseOrderNumber || '');
   
   if (!reorder) {
     return (
@@ -48,10 +51,16 @@ const ReorderDetailsPage = () => {
   }
 
   const handleApprove = () => {
+    if (!purchaseOrderNumber) {
+      toast.error("Please enter a Purchase Order Number before approving");
+      return;
+    }
+    
     const updatedReorder = {
       ...reorder,
       status: 'approved' as const,
       dateApproved: new Date().toISOString().split('T')[0],
+      purchaseOrderNumber,
     };
 
     setReorder(updatedReorder);
@@ -74,7 +83,6 @@ const ReorderDetailsPage = () => {
       status: 'ordered' as const,
       dateOrdered: new Date().toISOString().split('T')[0],
       expectedDelivery: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      purchaseOrderNumber: `PO-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
     };
 
     setReorder(updatedReorder);
@@ -246,14 +254,45 @@ const ReorderDetailsPage = () => {
                       </div>
                       <div className="p-4 bg-muted rounded-lg">
                         <div className="text-sm text-muted-foreground mb-1">Unit Price</div>
-                        <div className="font-medium">${reorder.unitPrice.toFixed(2)}</div>
+                        <div className="font-medium">₹{reorder.unitPrice.toFixed(2)}</div>
                       </div>
                       <div className="p-4 bg-muted rounded-lg">
                         <div className="text-sm text-muted-foreground mb-1">Total Price</div>
-                        <div className="font-medium">${reorder.totalPrice.toFixed(2)}</div>
+                        <div className="font-medium">₹{reorder.totalPrice.toFixed(2)}</div>
                       </div>
                     </div>
                   </div>
+                  
+                  {reorder.status === 'pending' && (
+                    <>
+                      <Separator />
+                      <div>
+                        <h3 className="font-medium mb-2">Purchase Order Information</h3>
+                        <div className="p-4 bg-muted rounded-lg">
+                          <div className="text-sm text-muted-foreground mb-1">Purchase Order Number</div>
+                          <Input
+                            value={purchaseOrderNumber}
+                            onChange={(e) => setPurchaseOrderNumber(e.target.value)}
+                            placeholder="Enter PO number before approval"
+                            className="mt-1"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  
+                  {reorder.purchaseOrderNumber && (
+                    <>
+                      <Separator />
+                      <div>
+                        <h3 className="font-medium mb-2">Purchase Order Information</h3>
+                        <div className="p-4 bg-muted rounded-lg">
+                          <div className="text-sm text-muted-foreground mb-1">Purchase Order Number</div>
+                          <div className="font-medium">{reorder.purchaseOrderNumber}</div>
+                        </div>
+                      </div>
+                    </>
+                  )}
                   
                   {reorder.notes && (
                     <>

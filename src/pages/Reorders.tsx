@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/layout/AppLayout';
@@ -28,6 +29,24 @@ import { Button } from '@/components/ui/button';
 const ReordersPage: React.FC = () => {
   const navigate = useNavigate();
   const [reorders, setReorders] = React.useState<Reorder[]>(mockReorders);
+
+  React.useEffect(() => {
+    // Auto-approve the reorder if directed from SpareParts page
+    const params = new URLSearchParams(window.location.search);
+    const approveId = params.get('approve');
+    
+    if (approveId) {
+      const reorderToApprove = reorders.find(r => r.id === approveId);
+      
+      if (reorderToApprove && reorderToApprove.status === 'pending') {
+        handleApprove(reorderToApprove);
+        
+        // Clear the URL parameter after approval
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, '', newUrl);
+      }
+    }
+  }, []);
 
   const handleApprove = (reorder: Reorder) => {
     const updatedReorder = {
@@ -89,12 +108,20 @@ const ReordersPage: React.FC = () => {
     {
       accessorKey: "unitPrice",
       header: "Unit Price",
-      cell: ({ row }) => <div className="text-right">${row.getValue("unitPrice").toFixed(2)}</div>,
+      cell: ({ row }) => <div className="text-right">₹{row.getValue("unitPrice").toFixed(2)}</div>,
     },
     {
       accessorKey: "totalPrice",
       header: "Total Price",
-      cell: ({ row }) => <div className="text-right">${row.getValue("totalPrice").toFixed(2)}</div>,
+      cell: ({ row }) => <div className="text-right">₹{row.getValue("totalPrice").toFixed(2)}</div>,
+    },
+    {
+      accessorKey: "purchaseOrderNumber",
+      header: "PO Number",
+      cell: ({ row }) => {
+        const poNumber = row.getValue("purchaseOrderNumber");
+        return <div>{poNumber || "-"}</div>;
+      },
     },
     {
       accessorKey: "dateRequested",
@@ -146,22 +173,24 @@ const ReordersPage: React.FC = () => {
         
         return reorder.status === 'pending' ? (
           <div className="flex items-center gap-2">
-            <Badge 
+            <Button 
               variant="outline" 
-              className="cursor-pointer border-green-500 text-green-600 hover:bg-green-50"
+              size="sm"
+              className="border-green-500 text-green-600 hover:bg-green-50"
               onClick={() => handleApprove(reorder)}
             >
               <CheckCircle className="mr-1 h-3 w-3" />
               Approve
-            </Badge>
-            <Badge 
+            </Button>
+            <Button 
               variant="outline" 
-              className="cursor-pointer border-red-500 text-red-600 hover:bg-red-50"
+              size="sm"
+              className="border-red-500 text-red-600 hover:bg-red-50"
               onClick={() => handleReject(reorder)}
             >
               <XCircle className="mr-1 h-3 w-3" />
               Reject
-            </Badge>
+            </Button>
           </div>
         ) : null;
       },
