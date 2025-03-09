@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
@@ -8,14 +9,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Asset } from '@/lib/types';
 import { mockAssets } from '@/lib/mock-data';
+import { mockSpareParts } from '@/lib/mock-data';
 import { ColumnDef } from '@tanstack/react-table';
-import { Wrench, Plus, Search, FileText, ArrowUpDown } from 'lucide-react';
+import { Wrench, Plus, Search, FileText, ArrowUpDown, Grid } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 
 const Assets = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [viewType, setViewType] = useState<'table' | 'cards'>('table');
+  const [viewType, setViewType] = useState<'table' | 'cards' | 'matrix'>('table');
   const navigate = useNavigate();
 
   // Filter assets based on search term
@@ -110,6 +112,29 @@ const Assets = () => {
     );
   };
 
+  // Function to render stock status indicators
+  const renderStockStatus = (status: string) => {
+    return (
+      <div className="flex items-center justify-center">
+        {status === 'in-stock' && (
+          <div className="w-4 h-4 rounded-full bg-green-500" title="In Stock" />
+        )}
+        {status === 'low-stock' && (
+          <div className="w-4 h-4 rounded-full bg-amber-500" title="Low Stock" />
+        )}
+        {status === 'out-of-stock' && (
+          <div className="w-4 h-4 rounded-full bg-red-500" title="Out of Stock" />
+        )}
+        {status === 'on-order' && (
+          <div className="w-4 h-4 rounded-full bg-blue-500" title="On Order" />
+        )}
+      </div>
+    );
+  };
+
+  // Get unique part types from spare parts for matrix headers
+  const partTypes = Array.from(new Set(mockSpareParts.map(part => part.partType)));
+
   return (
     <AppLayout>
       <div className="flex items-center justify-between mb-8">
@@ -135,20 +160,23 @@ const Assets = () => {
             className="pl-10"
           />
         </div>
-        <Tabs value={viewType} onValueChange={(value) => setViewType(value as 'table' | 'cards')}>
+        <Tabs value={viewType} onValueChange={(value) => setViewType(value as 'table' | 'cards' | 'matrix')}>
           <TabsList>
             <TabsTrigger value="table">Table View</TabsTrigger>
             <TabsTrigger value="cards">Card View</TabsTrigger>
+            <TabsTrigger value="matrix">Spare Matrix</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
       
       <div className="space-y-6">
-        {viewType === 'table' ? (
+        {viewType === 'table' && (
           <div className="animate-fade-in">
             <DataTable columns={columns} data={filteredAssets} />
           </div>
-        ) : (
+        )}
+        
+        {viewType === 'cards' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
             {filteredAssets.map((asset) => (
               <Card key={asset.id} className="overflow-hidden transition-all duration-200 hover:shadow-md">
@@ -193,6 +221,99 @@ const Assets = () => {
               </Card>
             ))}
           </div>
+        )}
+        
+        {viewType === 'matrix' && (
+          <Card className="animate-fade-in">
+            <CardHeader>
+              <CardTitle>Spare Parts Matrix</CardTitle>
+            </CardHeader>
+            <CardContent className="overflow-x-auto">
+              <div className="min-w-max">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-muted/50">
+                      <th className="p-3 text-left font-medium border">Asset / Part Type</th>
+                      {partTypes.map((partType) => (
+                        <th key={partType} className="p-3 text-center font-medium border capitalize">
+                          {partType.replace('-', ' ')}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredAssets.map((asset) => (
+                      <tr key={asset.id} className="hover:bg-muted/50">
+                        <td className="p-3 border">
+                          <div className="font-medium">{asset.serialNumber}</div>
+                          <div className="text-sm text-muted-foreground">{asset.nameplate}</div>
+                          <div className="mt-1">{renderStatusBadge(asset.status)}</div>
+                        </td>
+                        {partTypes.map((partType) => {
+                          // Find spare parts of this type for this asset
+                          const partsOfType = asset.spareParts.filter(
+                            (sp) => sp.partType === partType
+                          );
+                          
+                          return (
+                            <td key={`${asset.id}-${partType}`} className="p-3 border text-center">
+                              {partsOfType.length > 0 ? (
+                                <div>
+                                  {partsOfType.map((part) => {
+                                    // Find the full spare part details
+                                    const fullPart = mockSpareParts.find(sp => sp.id === part.partId);
+                                    
+                                    return (
+                                      <div 
+                                        key={part.id} 
+                                        className="mb-2 p-2 rounded border hover:bg-accent cursor-pointer"
+                                        title={`${part.partName} - Qty: ${part.quantity}`}
+                                      >
+                                        <div className="font-medium">{part.partName}</div>
+                                        <div className="text-sm">{`Qty: ${part.quantity}`}</div>
+                                        {fullPart && (
+                                          <div className="mt-1">
+                                            {renderStockStatus(fullPart.status)}
+                                          </div>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              ) : (
+                                <span className="text-muted-foreground">N/A</span>
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="mt-6 border p-4 rounded-md bg-muted/20">
+                <div className="text-sm font-medium mb-2">Legend:</div>
+                <div className="flex gap-6">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-green-500"></div>
+                    <span className="text-sm">In Stock</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-amber-500"></div>
+                    <span className="text-sm">Low Stock</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-red-500"></div>
+                    <span className="text-sm">Out of Stock</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-blue-500"></div>
+                    <span className="text-sm">On Order</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         )}
       </div>
     </AppLayout>
