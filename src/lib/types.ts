@@ -21,18 +21,60 @@ export interface AssetSparePart {
   id: string;
   partId: string;
   partName: string;
-  partType: 'cap-tip' | 'tip-base' | 'shank' | 'adapter';
+  partType: SparePartType;
   quantity: number;
   lastReplaced?: string;
   notes?: string;
 }
+
+// Expanded list of part types
+export type SparePartType = 
+  | 'cap-tip'
+  | 'tip-base-moving'
+  | 'tip-base-fixed'
+  | 'shank-moving'
+  | 'shank-fixed'
+  | 'adapter-moving'
+  | 'adapter-fixed'
+  | 'holder-fixed'
+  | 'holder-moving'
+  | 'point-holder'
+  | 'arm'
+  | 'arm-assy'
+  | 'gun-body'
+  | 'gun-body-assy'
+  | 'bush'
+  | 'lm-guide'
+  | 'movable-yoke'
+  | 'movable-yoke-assy'
+  | 'teflon-hose'
+  | 'attachment-assy'
+  | 'spatter-cover-assy'
+  | 'spatter-cover'
+  | 'fulcrum-pin-assy'
+  | 'bracket-assy'
+  | 'stopper-assy'
+  | 'shunt'
+  | 'shunt-assy'
+  | 'gear-case-assy'
+  | 'coupler'
+  | 'belt'
+  | 'metal-scraper'
+  | 'scraper'
+  | 'dust-seal'
+  | 'plug-silencer'
+  | 'hinge-pin-assy'
+  | 'insul-assy'
+  | 'transformer'
+  | 'tr-box-assy'
+  | 'manifold-assy';
 
 // Spare Parts Inventory Types
 export interface SparePart {
   id: string;
   name: string;
   partNumber: string;
-  partType: 'cap-tip' | 'tip-base' | 'shank' | 'adapter';
+  partType: SparePartType;
   description: string;
   compatibleRobots: string[];
   manufacturer: string;
@@ -56,7 +98,7 @@ export interface Reorder {
   partId: string;
   partName: string;
   partNumber: string;
-  partType: 'cap-tip' | 'tip-base' | 'shank' | 'adapter';
+  partType: SparePartType;
   supplier: string;
   quantity: number;
   unitPrice: number;
