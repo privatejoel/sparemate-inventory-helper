@@ -18,6 +18,9 @@ const NewReorderPage = () => {
   const [notes, setNotes] = useState('');
   const [urgency, setUrgency] = useState('normal');
   const [purchaseOrderNumber, setPurchaseOrderNumber] = useState('');
+  const [hasQuotedPrice, setHasQuotedPrice] = useState(false);
+  const [quotedPrice, setQuotedPrice] = useState<number | null>(null);
+  const [quoteValidity, setQuoteValidity] = useState<string>('');
 
   useEffect(() => {
     // Get partId from URL if it exists
@@ -136,6 +139,47 @@ const NewReorderPage = () => {
                   onChange={(e) => setPurchaseOrderNumber(e.target.value)}
                   required 
                 />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Quoted Price Information</label>
+                <div className="flex items-center gap-2 mb-2">
+                  <input 
+                    type="checkbox" 
+                    id="hasQuotedPrice"
+                    checked={hasQuotedPrice}
+                    onChange={(e) => setHasQuotedPrice(e.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  <label htmlFor="hasQuotedPrice" className="text-sm">
+                    I have a previously quoted price
+                  </label>
+                </div>
+                
+                {hasQuotedPrice && (
+                  <div className="space-y-3 p-3 border rounded-md">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Quoted Price (₹)</label>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        step="0.01"
+                        placeholder="Enter quoted price"
+                        value={quotedPrice === null ? '' : quotedPrice}
+                        onChange={(e) => setQuotedPrice(e.target.value ? parseFloat(e.target.value) : null)}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Quote Valid Until</label>
+                      <Input 
+                        type="date" 
+                        value={quoteValidity}
+                        onChange={(e) => setQuoteValidity(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2">

@@ -1,3 +1,4 @@
+
 // Asset Management Types
 export interface Asset {
   id: string;
@@ -72,6 +73,9 @@ export interface Reorder {
   paymentStatus?: 'paid' | 'pending' | 'issue';
   notes?: string;
   supportRequests?: SupportRequest[];
+  quotedPrice?: number;
+  quoteValidity?: string;
+  priceReviewed?: boolean;
 }
 
 // Support Request Types

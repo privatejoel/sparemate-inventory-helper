@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/layout/AppLayout';
@@ -7,12 +6,16 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { ArrowLeft, ShoppingCart, Package, Truck, Calendar, FileText, CheckCircle, AlertCircle, XCircle, LifeBuoy, ClipboardList } from 'lucide-react';
+import { 
+  ArrowLeft, ShoppingCart, Package, Truck, Calendar, FileText, 
+  CheckCircle, AlertCircle, XCircle, LifeBuoy, ClipboardList, FileCheck
+} from 'lucide-react';
 import { mockReorders } from '@/lib/mock-data';
 import { cn } from '@/lib/utils';
 import { Reorder } from '@/lib/types';
 import SupportRequestDialog from '@/components/SupportRequestDialog';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const ReorderDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -24,6 +27,8 @@ const ReorderDetailsPage = () => {
   
   const [supportDialogOpen, setSupportDialogOpen] = useState(false);
   const [purchaseOrderNumber, setPurchaseOrderNumber] = useState(reorder?.purchaseOrderNumber || '');
+  const [quoteReviewed, setQuoteReviewed] = useState(false);
+  const [quoteValid, setQuoteValid] = useState(false);
   
   if (!reorder) {
     return (
@@ -53,6 +58,16 @@ const ReorderDetailsPage = () => {
   const handleApprove = () => {
     if (!purchaseOrderNumber) {
       toast.error("Please enter a Purchase Order Number before approving");
+      return;
+    }
+
+    if (!quoteReviewed) {
+      toast.error("Please review the price quote before approving the order");
+      return;
+    }
+
+    if (!quoteValid) {
+      toast.error("You cannot approve an order with an invalid price quote");
       return;
     }
     
@@ -143,6 +158,14 @@ const ReorderDetailsPage = () => {
       case 'cancelled': return "bg-red-100 text-red-800 border-red-200";
       default: return "bg-gray-100 text-gray-800 border-gray-200";
     }
+  };
+
+  const isQuoteValid = () => {
+    if (!reorder.quoteValidity) return false;
+    
+    const today = new Date();
+    const validityDate = new Date(reorder.quoteValidity);
+    return today <= validityDate;
   };
 
   return (
@@ -263,12 +286,40 @@ const ReorderDetailsPage = () => {
                     </div>
                   </div>
                   
+                  {reorder.quotedPrice && (
+                    <>
+                      <Separator />
+                      <div>
+                        <h3 className="font-medium mb-2">Price Quote Information</h3>
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                          <div className="p-4 bg-muted rounded-lg">
+                            <div className="text-sm text-muted-foreground mb-1">Quoted Price</div>
+                            <div className="font-medium">₹{reorder.quotedPrice.toFixed(2)}</div>
+                          </div>
+                          <div className="p-4 bg-muted rounded-lg">
+                            <div className="text-sm text-muted-foreground mb-1">Quote Valid Until</div>
+                            <div className="font-medium">
+                              {reorder.quoteValidity 
+                                ? new Date(reorder.quoteValidity).toLocaleDateString() 
+                                : 'Not specified'}
+                            </div>
+                            {reorder.quoteValidity && (
+                              <div className={`text-xs mt-1 ${isQuoteValid() ? 'text-green-600' : 'text-red-600'}`}>
+                                {isQuoteValid() ? 'Quote is valid' : 'Quote has expired'}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  
                   {reorder.status === 'pending' && (
                     <>
                       <Separator />
                       <div>
                         <h3 className="font-medium mb-2">Purchase Order Information</h3>
-                        <div className="p-4 bg-muted rounded-lg">
+                        <div className="p-4 bg-muted rounded-lg mb-4">
                           <div className="text-sm text-muted-foreground mb-1">Purchase Order Number</div>
                           <Input
                             value={purchaseOrderNumber}
@@ -277,11 +328,58 @@ const ReorderDetailsPage = () => {
                             className="mt-1"
                           />
                         </div>
+                        
+                        <div className="p-4 bg-muted rounded-lg">
+                          <h4 className="font-medium mb-2">Price Quote Review</h4>
+                          <div className="flex items-start gap-2 mb-3">
+                            <Checkbox 
+                              id="quoteReviewed" 
+                              checked={quoteReviewed}
+                              onCheckedChange={(checked) => {
+                                if (checked === true || checked === false) {
+                                  setQuoteReviewed(checked);
+                                }
+                              }}
+                              className="mt-1"
+                            />
+                            <div>
+                              <label htmlFor="quoteReviewed" className="text-sm font-medium">
+                                I have reviewed the price quote for this reorder
+                              </label>
+                              <p className="text-xs text-muted-foreground">
+                                This confirms you have reviewed the pricing before approval
+                              </p>
+                            </div>
+                          </div>
+                          
+                          {quoteReviewed && (
+                            <div className="flex items-start gap-2 pl-6">
+                              <Checkbox 
+                                id="quoteValid" 
+                                checked={quoteValid}
+                                onCheckedChange={(checked) => {
+                                  if (checked === true || checked === false) {
+                                    setQuoteValid(checked);
+                                  }
+                                }}
+                                className="mt-1"
+                              />
+                              <div>
+                                <label htmlFor="quoteValid" className="text-sm font-medium">
+                                  The price quote is valid and within the validity period
+                                </label>
+                                <p className="text-xs text-muted-foreground">
+                                  You can only approve orders with valid price quotes
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </>
                   )}
                   
-                  {reorder.purchaseOrderNumber && (
+                  {reorder.purchaseOrderNumber && reorder.status !== 'pending' && (
                     <>
                       <Separator />
                       <div>
@@ -326,6 +424,18 @@ const ReorderDetailsPage = () => {
                       {reorder.dateRequested ? new Date(reorder.dateRequested).toLocaleDateString() : "N/A"}
                     </time>
                   </li>
+                  
+                  {reorder.quotedPrice && reorder.quoteValidity && (
+                    <li className="mb-6 ml-6">
+                      <span className="absolute flex items-center justify-center w-8 h-8 rounded-full -left-4 ring-4 ring-background bg-amber-100">
+                        <FileCheck className="w-4 h-4 text-amber-600" />
+                      </span>
+                      <h3 className="font-semibold">Price Quoted</h3>
+                      <time className="block mb-2 text-sm text-muted-foreground">
+                        Valid until {new Date(reorder.quoteValidity).toLocaleDateString()}
+                      </time>
+                    </li>
+                  )}
                   
                   {reorder.dateApproved && (
                     <li className="mb-6 ml-6">
