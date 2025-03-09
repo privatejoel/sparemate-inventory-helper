@@ -1,4 +1,3 @@
-
 // Asset Management Types
 export interface Asset {
   id: string;
@@ -61,7 +60,7 @@ export interface Reorder {
   quantity: number;
   unitPrice: number;
   totalPrice: number;
-  status: 'pending' | 'approved' | 'ordered' | 'delivered' | 'cancelled';
+  status: 'pending' | 'approved' | 'ordered' | 'in-transit' | 'delivered' | 'cancelled';
   dateRequested: string;
   dateApproved?: string;
   dateOrdered?: string;
@@ -69,7 +68,22 @@ export interface Reorder {
   dateDelivered?: string;
   purchaseOrderNumber?: string;
   invoiceNumber?: string;
+  grnNumber?: string;
+  paymentStatus?: 'paid' | 'pending' | 'issue';
   notes?: string;
+  supportRequests?: SupportRequest[];
+}
+
+// Support Request Types
+export interface SupportRequest {
+  id: string;
+  orderId: string;
+  type: 'cancellation' | 'modification' | 'urgent-delivery' | 'supplier-delay' | 'warranty-claim';
+  notes?: string;
+  status: 'open' | 'in-progress' | 'resolved' | 'closed';
+  dateSubmitted: string;
+  dateResolved?: string;
+  responseNotes?: string;
 }
 
 // Dashboard & Report Types

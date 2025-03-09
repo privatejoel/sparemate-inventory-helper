@@ -96,7 +96,13 @@ const ReorderDetailsPage = () => {
         message = `Modification request submitted for order #${reorder?.id.replace('ro-', '')}`;
         break;
       case 'urgent-delivery':
-        message = `Urgent delivery request submitted for order #${reorder?.id.replace('ro-', '')}`;
+        message = `Urgent replacement request submitted for order #${reorder?.id.replace('ro-', '')}`;
+        break;
+      case 'supplier-delay':
+        message = `Supplier delay inquiry submitted for order #${reorder?.id.replace('ro-', '')}`;
+        break;
+      case 'warranty-claim':
+        message = `Warranty claim submitted for order #${reorder?.id.replace('ro-', '')}`;
         break;
       default:
         message = `Support request submitted for order #${reorder?.id.replace('ro-', '')}`;

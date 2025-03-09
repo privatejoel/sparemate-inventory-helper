@@ -12,9 +12,9 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { XCircle, Edit, Truck, HelpCircle } from 'lucide-react';
+import { XCircle, Edit, Truck, ShoppingCart, AlertCircle } from 'lucide-react';
 
-type SupportType = 'cancellation' | 'modification' | 'urgent-delivery' | 'other';
+type SupportType = 'cancellation' | 'modification' | 'urgent-delivery' | 'supplier-delay' | 'warranty-claim';
 
 interface SupportRequestDialogProps {
   isOpen: boolean;
@@ -29,14 +29,14 @@ const SupportRequestDialog = ({
   orderId,
   onSubmit,
 }: SupportRequestDialogProps) => {
-  const [supportType, setSupportType] = useState<SupportType>('other');
+  const [supportType, setSupportType] = useState<SupportType>('urgent-delivery');
   const [notes, setNotes] = useState('');
 
   const handleSubmit = () => {
     onSubmit(supportType, notes);
     setIsOpen(false);
     // Reset form
-    setSupportType('other');
+    setSupportType('urgent-delivery');
     setNotes('');
   };
 
@@ -82,19 +82,30 @@ const SupportRequestDialog = ({
               <Label htmlFor="urgent-delivery" className="flex items-center gap-2 cursor-pointer">
                 <Truck className="h-4 w-4 text-amber-500" />
                 <div>
-                  <p className="font-medium">Urgent Delivery</p>
-                  <p className="text-sm text-muted-foreground">Request expedited shipping</p>
+                  <p className="font-medium">Urgent Replacement</p>
+                  <p className="text-sm text-muted-foreground">Request expedited shipping for critical needs</p>
                 </div>
               </Label>
             </div>
             
             <div className="flex items-center space-x-2 rounded-md border p-3">
-              <RadioGroupItem value="other" id="other" />
-              <Label htmlFor="other" className="flex items-center gap-2 cursor-pointer">
-                <HelpCircle className="h-4 w-4 text-purple-500" />
+              <RadioGroupItem value="supplier-delay" id="supplier-delay" />
+              <Label htmlFor="supplier-delay" className="flex items-center gap-2 cursor-pointer">
+                <AlertCircle className="h-4 w-4 text-orange-500" />
                 <div>
-                  <p className="font-medium">Other Assistance</p>
-                  <p className="text-sm text-muted-foreground">Any other support needed</p>
+                  <p className="font-medium">Supplier Delay Inquiry</p>
+                  <p className="text-sm text-muted-foreground">Check status of delayed deliveries</p>
+                </div>
+              </Label>
+            </div>
+            
+            <div className="flex items-center space-x-2 rounded-md border p-3">
+              <RadioGroupItem value="warranty-claim" id="warranty-claim" />
+              <Label htmlFor="warranty-claim" className="flex items-center gap-2 cursor-pointer">
+                <ShoppingCart className="h-4 w-4 text-purple-500" />
+                <div>
+                  <p className="font-medium">Warranty Claim</p>
+                  <p className="text-sm text-muted-foreground">Report issues with received parts</p>
                 </div>
               </Label>
             </div>
