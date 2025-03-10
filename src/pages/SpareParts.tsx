@@ -1,36 +1,17 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/layout/AppLayout';
 import { mockSpareParts } from '@/lib/mock-data';
 import { mockAssets } from '@/lib/mock-data/assets';
-import { DataTable } from '@/components/ui/data-table';
-import { SparePart, SparePartType } from '@/lib/types';
-import { Badge } from '@/components/ui/badge';
+import { SparePartsTable } from '@/components/spare-parts/SparePartsTable';
+import { SparePartsMatrix } from '@/components/spare-parts/SparePartsMatrix';
+import { StockStatusLegend } from '@/components/spare-parts/StockStatusLegend';
 import { Button } from '@/components/ui/button';
-import { 
-  ArrowUpDown,
-  AlertTriangle,
-  CheckCircle,
-  ShoppingCart,
-  Clock,
-  Plus,
-  Search,
-  Database,
-  Grid
-} from 'lucide-react';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Plus, Search, Database, Grid } from 'lucide-react';
+import { SparePartType } from '@/lib/types';
 
 const SparePartsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -43,152 +24,20 @@ const SparePartsPage: React.FC = () => {
     asset.nameplate.toLowerCase().includes(searchTerm.toLowerCase()) ||
     asset.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
-  const handleReorder = (sparePart: SparePart) => {
-    // Navigate to the new reorder page with the part ID in search params
-    navigate(`/reorders/new?partId=${sparePart.id}`);
-    toast.info(`Starting reorder process for ${sparePart.name}`);
-  };
 
-  // All part types in the ordered shown in the requirements
+  // Part types in order
   const partTypeOrder: SparePartType[] = [
-    'cap-tip', 
-    'tip-base-moving', 'tip-base-fixed',
-    'shank-moving', 'shank-fixed',
-    'adapter-moving', 'adapter-fixed',
-    'holder-fixed', 'holder-moving',
-    'point-holder',
-    'arm', 'arm-assy',
-    'gun-body', 'gun-body-assy',
-    'bush', 'lm-guide',
-    'movable-yoke', 'movable-yoke-assy',
-    'teflon-hose',
-    'attachment-assy',
-    'spatter-cover-assy', 'spatter-cover',
-    'fulcrum-pin-assy',
-    'bracket-assy',
-    'stopper-assy',
-    'shunt', 'shunt-assy',
-    'gear-case-assy',
-    'coupler', 'belt',
-    'metal-scraper', 'scraper',
-    'dust-seal',
-    'plug-silencer',
-    'hinge-pin-assy',
-    'insul-assy',
-    'transformer',
-    'tr-box-assy',
-    'manifold-assy'
-  ];
-  
-  // Function to render stock status indicators
-  const renderStockStatus = (status: string) => {
-    return (
-      <div className="flex items-center justify-center">
-        {status === 'in-stock' && (
-          <div className="w-4 h-4 rounded-full bg-green-500" title="In Stock" />
-        )}
-        {status === 'low-stock' && (
-          <div className="w-4 h-4 rounded-full bg-amber-500" title="Low Stock" />
-        )}
-        {status === 'out-of-stock' && (
-          <div className="w-4 h-4 rounded-full bg-red-500" title="Out of Stock" />
-        )}
-        {status === 'on-order' && (
-          <div className="w-4 h-4 rounded-full bg-blue-500" title="On Order" />
-        )}
-      </div>
-    );
-  };
-  
-  const columns = [
-    {
-      accessorKey: "name",
-      header: ({ column }) => (
-        <div className="flex items-center">
-          Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </div>
-      ),
-      cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
-    },
-    {
-      accessorKey: "partNumber",
-      header: "Part Number",
-    },
-    {
-      accessorKey: "partType",
-      header: "Part Type",
-      cell: ({ row }) => {
-        const partType = row.getValue("partType") as string;
-        return (
-          <div className="capitalize">{partType.replace(/-/g, ' ')}</div>
-        );
-      },
-    },
-    {
-      accessorKey: "stockQuantity",
-      header: ({ column }) => (
-        <div className="flex items-center">
-          Stock Qty
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </div>
-      ),
-      cell: ({ row }) => <div className="text-center">{row.getValue("stockQuantity")}</div>,
-    },
-    {
-      accessorKey: "unitPrice",
-      header: "Unit Price",
-      cell: ({ row }) => <div className="text-right">₹{row.getValue("unitPrice").toFixed(2)}</div>,
-    },
-    {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({ row }) => {
-        const status = row.getValue("status") as SparePart['status'];
-        
-        return (
-          <Badge
-            className={cn(
-              "capitalize",
-              status === "in-stock" && "bg-green-100 text-green-800 hover:bg-green-100",
-              status === "low-stock" && "bg-amber-100 text-amber-800 hover:bg-amber-100",
-              status === "out-of-stock" && "bg-red-100 text-red-800 hover:bg-red-100",
-              status === "on-order" && "bg-blue-100 text-blue-800 hover:bg-blue-100"
-            )}
-          >
-            {status === "in-stock" && <CheckCircle className="mr-1 h-3 w-3" />}
-            {status === "low-stock" && <AlertTriangle className="mr-1 h-3 w-3" />}
-            {status === "out-of-stock" && <AlertTriangle className="mr-1 h-3 w-3" />}
-            {status === "on-order" && <Clock className="mr-1 h-3 w-3" />}
-            {status.replace('-', ' ')}
-          </Badge>
-        );
-      },
-    },
-    {
-      accessorKey: "reorderPoint",
-      header: "Reorder Point",
-    },
-    {
-      id: "actions",
-      cell: ({ row }) => {
-        const sparePart = row.original as SparePart;
-        const needsReorder = sparePart.stockQuantity <= sparePart.reorderPoint;
-        
-        return needsReorder && sparePart.status !== 'on-order' ? (
-          <Button 
-            variant="outline" 
-            size="sm"
-            className="border-amber-500 text-amber-600 hover:bg-amber-50"
-            onClick={() => handleReorder(sparePart)}
-          >
-            <ShoppingCart className="mr-1 h-3 w-3" />
-            Reorder
-          </Button>
-        ) : null;
-      },
-    },
+    'cap-tip', 'tip-base-moving', 'tip-base-fixed',
+    'shank-moving', 'shank-fixed', 'adapter-moving', 'adapter-fixed',
+    'holder-fixed', 'holder-moving', 'point-holder',
+    'arm', 'arm-assy', 'gun-body', 'gun-body-assy',
+    'bush', 'lm-guide', 'movable-yoke', 'movable-yoke-assy',
+    'teflon-hose', 'attachment-assy', 'spatter-cover-assy', 'spatter-cover',
+    'fulcrum-pin-assy', 'bracket-assy', 'stopper-assy',
+    'shunt', 'shunt-assy', 'gear-case-assy',
+    'coupler', 'belt', 'metal-scraper', 'scraper',
+    'dust-seal', 'plug-silencer', 'hinge-pin-assy',
+    'insul-assy', 'transformer', 'tr-box-assy', 'manifold-assy'
   ];
 
   return (
@@ -283,12 +132,7 @@ const SparePartsPage: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <DataTable 
-                columns={columns} 
-                data={mockSpareParts} 
-                searchColumn="name"
-                searchPlaceholder="Search parts..."
-              />
+              <SparePartsTable data={mockSpareParts} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -300,100 +144,8 @@ const SparePartsPage: React.FC = () => {
               <CardDescription>Comprehensive view of all spare parts by type</CardDescription>
             </CardHeader>
             <CardContent className="overflow-x-auto">
-              <div className="min-w-max">
-                <Table>
-                  <TableHeader className="bg-muted/50">
-                    <TableRow>
-                      <TableHead className="border font-medium">Type</TableHead>
-                      <TableHead className="border font-medium">Timer</TableHead>
-                      <TableHead className="border font-medium">ATD</TableHead>
-                      <TableHead className="border font-medium">QTY</TableHead>
-                      {partTypeOrder.map((partType) => (
-                        <TableHead key={partType} className="border font-medium text-center capitalize whitespace-nowrap px-3 py-2">
-                          {partType.replace(/-/g, ' ')}
-                        </TableHead>
-                      ))}
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredAssets.map((asset) => (
-                      <TableRow key={asset.id} className="hover:bg-muted/50">
-                        <TableCell className="border font-medium whitespace-nowrap">
-                          {asset.serialNumber}
-                        </TableCell>
-                        <TableCell className="border">
-                          {new Date(asset.lastMaintenance).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell className="border">
-                          {new Date(asset.nextMaintenance).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell className="border text-center">
-                          {asset.spareParts.length}
-                        </TableCell>
-                        {partTypeOrder.map((partType) => {
-                          // Find spare parts of this type for this asset
-                          const partsOfType = asset.spareParts.filter(
-                            (sp) => sp.partType === partType
-                          );
-                          
-                          return (
-                            <TableCell key={`${asset.id}-${partType}`} className="border text-center p-2">
-                              {partsOfType.length > 0 ? (
-                                <div>
-                                  {partsOfType.map((part) => {
-                                    // Find the full spare part details
-                                    const fullPart = mockSpareParts.find(sp => sp.id === part.partId);
-                                    
-                                    return (
-                                      <div 
-                                        key={part.id} 
-                                        className="mb-1 p-1 rounded border hover:bg-accent cursor-pointer text-xs"
-                                        title={`${part.partName} - Qty: ${part.quantity}`}
-                                        onClick={() => fullPart && handleReorder(fullPart)}
-                                      >
-                                        <div className="font-medium truncate max-w-[100px]">{part.partName}</div>
-                                        <div className="text-xs">{`Qty: ${part.quantity}`}</div>
-                                        {fullPart && (
-                                          <div className="mt-1">
-                                            {renderStockStatus(fullPart.status)}
-                                          </div>
-                                        )}
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              ) : (
-                                <span className="text-muted-foreground text-xs">N/A</span>
-                              )}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-              <div className="mt-4 border p-3 rounded-md bg-muted/20">
-                <div className="text-sm font-medium mb-2">Legend:</div>
-                <div className="flex flex-wrap gap-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-green-500"></div>
-                    <span className="text-sm">In Stock</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-amber-500"></div>
-                    <span className="text-sm">Low Stock</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-red-500"></div>
-                    <span className="text-sm">Out of Stock</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-blue-500"></div>
-                    <span className="text-sm">On Order</span>
-                  </div>
-                </div>
-              </div>
+              <SparePartsMatrix assets={filteredAssets} partTypes={partTypeOrder} />
+              <StockStatusLegend />
             </CardContent>
           </Card>
         </TabsContent>
