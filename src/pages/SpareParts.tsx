@@ -34,7 +34,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 const SparePartsPage: React.FC = () => {
   const navigate = useNavigate();
-  const [viewType, setViewType] = useState<'matrix' | 'table'>('matrix');
+  const [viewType, setViewType] = useState<'matrix' | 'table'>('table');
   const [searchTerm, setSearchTerm] = useState('');
   
   // Filter assets based on search term
@@ -196,10 +196,9 @@ const SparePartsPage: React.FC = () => {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Obara India - Spare Parts Inventory</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Spare Parts Inventory</h1>
             <p className="text-muted-foreground">Customer spare part reordering tool</p>
           </div>
-          <img src="/lovable-uploads/eaf397f7-ad51-4afe-82b3-2cb2f630c294.png" alt="Obara India Logo" className="h-16" />
         </div>
         
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">

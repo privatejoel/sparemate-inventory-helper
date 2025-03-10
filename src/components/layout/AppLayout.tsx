@@ -82,11 +82,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
         )}
       >
         <div className="p-6 border-b border-border flex items-center justify-center">
-          <img 
-            src="/lovable-uploads/eaf397f7-ad51-4afe-82b3-2cb2f630c294.png" 
-            alt="Obara India Logo" 
-            className="h-12" 
-          />
+          <div className="text-xl font-bold">Spare Parts</div>
         </div>
         <div className="mt-2 px-6">
           <h2 className="text-base font-medium text-center">Spare Parts Management System</h2>
@@ -105,10 +101,10 @@ const AppLayout = ({ children }: AppLayoutProps) => {
         <div className="p-4 border-t border-border">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-[#9b87f5] flex items-center justify-center text-primary-foreground">
-              <span className="text-sm font-medium">OI</span>
+              <span className="text-sm font-medium">SP</span>
             </div>
             <div>
-              <div className="text-sm font-medium">Obara India</div>
+              <div className="text-sm font-medium">Spare Parts</div>
               <div className="text-xs text-muted-foreground">Customer Portal</div>
             </div>
           </div>
