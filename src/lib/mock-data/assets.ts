@@ -19,7 +19,7 @@ export const mockAssets: Asset[] = [
     notes: 'Regular maintenance performed, all parts functioning well',
     spareParts: [
       { id: 'sp-001', partId: 'pt-001', partName: 'Copper Cap Tip', partType: 'cap-tip', quantity: 4, lastReplaced: '2023-09-12' },
-      { id: 'sp-002', partId: 'pt-003', partName: 'Heavy Duty Shank', partType: 'shank', quantity: 1, lastReplaced: '2023-07-28' }
+      { id: 'sp-002', partId: 'pt-003', partName: 'Heavy Duty Shank', partType: 'shank-moving', quantity: 1, lastReplaced: '2023-07-28' }
     ]
   },
   {
@@ -37,8 +37,8 @@ export const mockAssets: Asset[] = [
     nextMaintenance: '2024-02-12',
     notes: 'Currently undergoing maintenance due to inconsistent weld quality',
     spareParts: [
-      { id: 'sp-003', partId: 'pt-002', partName: 'Standard Tip Base', partType: 'tip-base', quantity: 2, lastReplaced: '2023-01-15' },
-      { id: 'sp-004', partId: 'pt-004', partName: 'Universal Adapter', partType: 'adapter', quantity: 1, lastReplaced: '2023-11-12' }
+      { id: 'sp-003', partId: 'pt-002', partName: 'Standard Tip Base', partType: 'tip-base-moving', quantity: 2, lastReplaced: '2023-01-15' },
+      { id: 'sp-004', partId: 'pt-004', partName: 'Universal Adapter', partType: 'adapter-moving', quantity: 1, lastReplaced: '2023-11-12' }
     ]
   },
   {
@@ -57,7 +57,7 @@ export const mockAssets: Asset[] = [
     notes: 'Operating at optimal performance after electrode replacement',
     spareParts: [
       { id: 'sp-005', partId: 'pt-001', partName: 'Copper Cap Tip', partType: 'cap-tip', quantity: 6, lastReplaced: '2023-09-28' },
-      { id: 'sp-006', partId: 'pt-005', partName: 'Heavy Duty Adapter', partType: 'adapter', quantity: 1, lastReplaced: '2023-04-17' }
+      { id: 'sp-006', partId: 'pt-005', partName: 'Heavy Duty Adapter', partType: 'adapter-fixed', quantity: 1, lastReplaced: '2023-04-17' }
     ]
   },
   {
@@ -75,8 +75,8 @@ export const mockAssets: Asset[] = [
     nextMaintenance: '2024-02-14',
     notes: 'Under repair due to water cooling system issues',
     spareParts: [
-      { id: 'sp-007', partId: 'pt-002', partName: 'Standard Tip Base', partType: 'tip-base', quantity: 2, lastReplaced: '2022-12-05' },
-      { id: 'sp-008', partId: 'pt-003', partName: 'Heavy Duty Shank', partType: 'shank', quantity: 1, lastReplaced: '2023-05-22' }
+      { id: 'sp-007', partId: 'pt-002', partName: 'Standard Tip Base', partType: 'tip-base-fixed', quantity: 2, lastReplaced: '2022-12-05' },
+      { id: 'sp-008', partId: 'pt-003', partName: 'Heavy Duty Shank', partType: 'shank-fixed', quantity: 1, lastReplaced: '2023-05-22' }
     ]
   },
   {
@@ -95,7 +95,7 @@ export const mockAssets: Asset[] = [
     notes: 'Performs consistently with high weld quality',
     spareParts: [
       { id: 'sp-009', partId: 'pt-001', partName: 'Copper Cap Tip', partType: 'cap-tip', quantity: 8, lastReplaced: '2023-10-30' },
-      { id: 'sp-010', partId: 'pt-004', partName: 'Universal Adapter', partType: 'adapter', quantity: 1, lastReplaced: '2023-07-12' }
+      { id: 'sp-010', partId: 'pt-004', partName: 'Universal Adapter', partType: 'adapter-moving', quantity: 1, lastReplaced: '2023-07-12' }
     ]
   }
 ];
