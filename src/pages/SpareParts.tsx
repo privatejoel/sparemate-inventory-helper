@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Search, Database, Grid } from 'lucide-react';
+import { Plus, Search, Database, Grid, CheckCircle, AlertTriangle } from 'lucide-react';
 import { SparePartType } from '@/lib/types';
 
 const SparePartsPage: React.FC = () => {
@@ -18,14 +18,12 @@ const SparePartsPage: React.FC = () => {
   const [viewType, setViewType] = useState<'matrix' | 'table'>('table');
   const [searchTerm, setSearchTerm] = useState('');
   
-  // Filter assets based on search term
   const filteredAssets = mockAssets.filter((asset) => 
     asset.serialNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
     asset.nameplate.toLowerCase().includes(searchTerm.toLowerCase()) ||
     asset.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Part types in order
   const partTypeOrder: SparePartType[] = [
     'cap-tip', 'tip-base-moving', 'tip-base-fixed',
     'shank-moving', 'shank-fixed', 'adapter-moving', 'adapter-fixed',

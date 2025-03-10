@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataTable } from '@/components/ui/data-table';
@@ -60,7 +59,11 @@ export const SparePartsTable: React.FC<SparePartsTableProps> = ({ data }) => {
     {
       accessorKey: "unitPrice",
       header: "Unit Price",
-      cell: ({ row }) => <div className="text-right">₹{row.getValue("unitPrice").toFixed(2)}</div>,
+      cell: ({ row }) => {
+        const value = row.getValue("unitPrice");
+        const price = typeof value === 'number' ? value : 0;
+        return <div className="text-right">₹{price.toFixed(2)}</div>;
+      },
     },
     {
       accessorKey: "status",
